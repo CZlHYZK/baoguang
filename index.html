@@ -105,18 +105,21 @@
       function loadImg($node) {
          $node.attr("src", $node.attr("data-src"));
       }
-      
-      $(document).scroll(function () {
-        if (timeToShow)
-          clearTimeout(timeToShow);
-        var timeToShow = setTimeout(function () {
-          $(".container img").each(function(index,ele){
+      function checkLoad(){
+        $(".container img").each(function(index,ele){
             if(!isLoaded($(ele))){
               var exposure=new Exposure($(ele),loadImg)
               exposure.bind();
               exposure=null;
             }
           })
+      }
+      checkLoad();
+      $(document).scroll(function () {
+        if (timeToShow)
+          clearTimeout(timeToShow);
+        var timeToShow = setTimeout(function () {
+          checkLoad();
         }, 300);
       });
     });
