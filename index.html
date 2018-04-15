@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>图片懒加载</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 620px;
+      margin: 0 auto;
+    }
+
+    ul {
+      list-style: none;
+      margin-right: -20px;
+    }
+
+    li {
+      width: 300px;
+      height: 300px;
+      float: left;
+      margin-right: 20px;
+      margin-top: 20px;
+    }
+
+    li>img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <ul>
+      <li>
+        <img data-src="http://img.liuxue86.com/2015/0906/20150906043546913.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.zcool.cn/community/018d4e554967920000019ae9df1533.jpg@900w_1l_2o_100sh.jpg">
+      </li>
+      <li>
+        <img data-src="http://img02.tooopen.com/images/20150507/tooopen_sy_122395947985.jpg">
+      </li>
+      <li>
+        <img data-src="http://img3.redocn.com/tupian/20150421/xiaohuakafeikafeibeibiankuangsucai_4013296.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.zcool.cn/community/0166e959ac1386a801211d25c63563.jpg@1280w_1l_2o_100sh.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.liuxue86.com/2015/0906/20150906043546913.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.taopic.com/uploads/allimg/120727/201995-120HG1030762.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.zcool.cn/community/018d4e554967920000019ae9df1533.jpg@900w_1l_2o_100sh.jpg">
+      </li>
+      <li>
+        <img data-src="http://img02.tooopen.com/images/20150507/tooopen_sy_122395947985.jpg">
+      </li>
+      <li>
+        <img data-src="http://img3.redocn.com/tupian/20150421/xiaohuakafeikafeibeibiankuangsucai_4013296.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.zcool.cn/community/0166e959ac1386a801211d25c63563.jpg@1280w_1l_2o_100sh.jpg">
+      </li>
+      <li>
+        <img data-src="http://img.liuxue86.com/2015/0906/20150906043546913.jpg">
+      </li>
+    </ul>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    $(function () {
+      function Exposure($node, callback) {
+        this.$node = $node;
+        this.callback = callback;
+      }
+      Exposure.prototype.isVisible = function () {
+        var winHeight = $(window).height();
+        var eleOffsetTop = this.$node.offset().top;
+        var scrollTop = $(document).scrollTop();
+        if (eleOffsetTop < winHeight + scrollTop && scrollTop < eleOffsetTop + this.$node.height())//如果是当元素上边缘消失即为消失把第二个判断条件的$node.height()去掉，如果判断元素完全消失加上$node.height()
+          return true;
+        else
+          return false;
+      }
+      Exposure.prototype.bind = function () {
+        if (this.isVisible(this.$node)) {
+          this.callback(this.$node);
+        }
+      }
+      function isLoaded($node) {
+        return $node.attr("src") === $node.attr("data-src");
+      }
+      function loadImg($node) {
+         $node.attr("src", $node.attr("data-src"));
+      }
+      
+      $(document).scroll(function () {
+        if (timeToShow)
+          clearTimeout(timeToShow);
+        var timeToShow = setTimeout(function () {
+          $(".container img").each(function(index,ele){
+            if(!isLoaded($(ele))){
+              var exposure=new Exposure($(ele),loadImg)
+              exposure.bind();
+              exposure=null;
+            }
+          })
+        }, 300);
+      });
+    });
+  </script>
+</body>
+
+</html>
